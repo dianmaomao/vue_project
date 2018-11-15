@@ -58,130 +58,128 @@
 </template>
 
 <script>
-  import AlertTip from '../../components/AlertTip/AlertTip'
-  import {reqSendCode,reqSmsLogin,reqPwdLogin} from '../../api'
+import AlertTip from '../../components/AlertTip/AlertTip'
+import {reqSendCode, reqSmsLogin, reqPwdLogin} from '../../api'
 
-  export default {
-    components:{
-      AlertTip
+export default {
+  components: {
+    AlertTip
+  },
+  data () {
+    return {
+      loginWay: true, // true代表短信登录
+      phone: '', // 手机号
+      computeTime: 0, // 计时事件
+      showPWD: false, // 是否显示密码
+      pwd: '', // 密码
+      code: '', // 短信验证码
+      name: '', // 用户名
+      captcha: '', // 图形验证码
+      alertText: '', // 提示文本
+      alertShow: false // 是否显示提示框
+    }
+  },
+  computed: {
+    rightPhone () {
+      return /^1\d{10}$/.test(this.phone)
+    }
+  },
+  methods: {
+    showAlert (alertText) {
+      this.alertShow = true
+      this.alertText = alertText
     },
-    data(){
-      return {
-        loginWay:true, //true代表短信登录
-        phone:'', //手机号
-        computeTime:0, //计时事件
-        showPWD:false, //是否显示密码
-        pwd:'', //密码
-        code:'', //短信验证码
-        name:'',//用户名
-        captcha:'', //图形验证码
-        alertText: '', //提示文本
-        alertShow:false //是否显示提示框
-      }
-    },
-    computed:{
-      rightPhone(){
-        return /^1\d{10}$/.test(this.phone)
-      }
-    },
-    methods:{
-      showAlert(alertText){
-        this.alertShow=true
-        this.alertText=alertText
-      },
-      //获取验证码
-     async getCode(){
-        if(!this.computeTime){
-          //启动倒计时
-          this.computeTime=30
-          this.intervalId=setInterval(()=>{
-            this.computeTime--
-            if(this.computeTime<=0){
-              clearInterval(this.intervalId)
-            }
-          },1000)
-          //发送ajax请求（向指定手机号发送验证码短信）
-          const result=await reqSendCode(this.phone)
-          if(result.code===1){
-            //显示错误提示，还要停止倒计时
-            this.showAlert(result.msg)
-            //如果在倒计时，就停止
-            if(this.computeTime){
-              this.computeTime=0
-              clearInterval(this.intervalId)
-              this.intervalId=undefined
-            }
+    // 获取验证码
+    async getCode () {
+      if (!this.computeTime) {
+        // 启动倒计时
+        this.computeTime = 30
+        this.intervalId = setInterval(() => {
+          this.computeTime--
+          if (this.computeTime <= 0) {
+            clearInterval(this.intervalId)
+          }
+        }, 1000)
+        // 发送ajax请求（向指定手机号发送验证码短信）
+        const result = await reqSendCode(this.phone)
+        if (result.code === 1) {
+          // 显示错误提示，还要停止倒计时
+          this.showAlert(result.msg)
+          // 如果在倒计时，就停止
+          if (this.computeTime) {
+            this.computeTime = 0
+            clearInterval(this.intervalId)
+            this.intervalId = undefined
           }
         }
-      },
-      //登录 ，前台的表单验证
-      async login(){
-        let result
-        if(this.loginWay) {//短信登录
-          const{rightPhone,phone,code}=this
-          if(!this.rightPhone){
-            //手机号不正确
-            this.showAlert('您输入的手机号不正确')
-            return
-          }else if (!/^\d{6}$/.test(code)){
-            //验证码不对
-            this.showAlert('请输入正确的验证码')
-            return
-          }
-          //发送ajax请求
-          result=await reqSmsLogin(phone,code)
-
-        }else{ //密码登录
-          const{name,pwd,captcha}=this
-          if(!this.name){
-            //用户名必须指定
-            this.showAlert('请输入用户名')
-            return
-          }else if (!this.pwd){
-            //密码必须指定
-            this.showAlert('请输入密码')
-            return
-          }else if (!this.captcha) {
-            //验证码必须指定
-            this.showAlert('请输入验证码')
-            return
-          }
-          //发送ajax请求
-           result=await reqPwdLogin({name,pwd,captcha})
-
-        }
-        //停止计时
-        if(this.computeTime){
-          this.computeTime=0
-          clearInterval(this.intervalId)
-          this.intervalId=undefined
-        }
-        //根据结果数据处理
-        if(result.code===0){
-          const user=result.data
-          //将user保存到state
-            this.$store.dispatch('recorduserInfo',user)
-          //跳转路由去个人中心界面
-          this.$router.replace('/profile')
-        }else{
-          //调用函数显示新的验证码
-          this.getCaptcha()
-          //显示错误提示
-          const msg=result.msg
-          this.showAlert(msg)
-        }
-      },
-      //关闭提示框
-      closeTip(){
-        this.alertShow=false
-        this.alertText=''
-      },
-      //获取图片验证码
-      getCaptcha(){
-        this.$refs.captcha.src='http://localhost:4000/captcha?time='+Date.now()
       }
+    },
+    // 登录 ，前台的表单验证
+    async login () {
+      let result
+      if (this.loginWay) { // 短信登录
+        const {rightPhone, phone, code} = this
+        if (!this.rightPhone) {
+          // 手机号不正确
+          this.showAlert('您输入的手机号不正确')
+          return
+        } else if (!/^\d{6}$/.test(code)) {
+          // 验证码不对
+          this.showAlert('请输入正确的验证码')
+          return
+        }
+        // 发送ajax请求
+        result = await reqSmsLogin(phone, code)
+      } else { // 密码登录
+        const {name, pwd, captcha} = this
+        if (!this.name) {
+          // 用户名必须指定
+          this.showAlert('请输入用户名')
+          return
+        } else if (!this.pwd) {
+          // 密码必须指定
+          this.showAlert('请输入密码')
+          return
+        } else if (!this.captcha) {
+          // 验证码必须指定
+          this.showAlert('请输入验证码')
+          return
+        }
+        // 发送ajax请求
+        result = await reqPwdLogin({name, pwd, captcha})
+      }
+      // 停止计时
+      if (this.computeTime) {
+        this.computeTime = 0
+        clearInterval(this.intervalId)
+        this.intervalId = undefined
+      }
+      // 根据结果数据处理
+      if (result.code === 0) {
+        const user = result.data
+        // 将user保存到state
+        this.$store.dispatch('recorduserInfo', user)
+        // 跳转路由去个人中心界面
+        this.$router.replace('/profile')
+      } else {
+        // 调用函数显示新的验证码
+        this.getCaptcha()
+        // 显示错误提示
+        const msg = result.msg
+        this.showAlert(msg)
+      }
+    },
+    // 关闭提示框
+    closeTip () {
+      this.alertShow = false
+      this.alertText = ''
+    },
+    // 获取图片验证码
+    getCaptcha () {
+      this.$refs.captcha.src = 'http://localhost:4000/captcha?time=' + Date.now()
     }
   }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

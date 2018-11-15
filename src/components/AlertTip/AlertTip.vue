@@ -11,19 +11,17 @@
   </div>
 </template>
 
-<script>
-  export default {
-    props: {
-      alertText: String
-    },
-
-    methods: {
-      closeTip() {
-        // 分发自定义事件(事件名: closeTip)
-          this.$emit('closeTip')
-      }
+<script>export default {
+  props: {
+    alertText: String
+  },
+  methods: {
+    closeTip () {
+      // 分发自定义事件(事件名: closeTip)
+      this.$emit('closeTip')
     }
   }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>

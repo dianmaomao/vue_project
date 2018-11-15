@@ -1,25 +1,79 @@
 <template>
   <section class="search">
     <TopHeader title="搜索"/>
-    <form class="search_form" action="#">
-      <input type="search" name="search" placeholder="请输入商家或美食名称" class="search_input">
-      <input type="submit" name="submit" class="search_submit">
+    <form class="search_form" @submit.prevent="search">
+      <input type="search" placeholder="请输入商家名称" class="search_input" v-model="keyword">
+      <input type="submit" class="search_submit">
     </form>
+    <section class="list" v-if="!noSearchShops">
+      <ul class="list_container">
+        <!--:to="'/shop?id='+item.id"-->
+        <router-link :to="{path:'/shop', query:{id:item.id}}" tag="li"
+                     v-for="item in searchShops" :key="item.id" class="list_li">
+          <section class="item_left">
+            <img src="../../components/ShopList/images/shop/4.jpg" class="restaurant_img">
+          </section>
+          <section class="item_right">
+            <div class="item_right_text">
+              <p>
+                <span>{{item.name}}</span>
+              </p>
+              <p>月售 {{item.month_sales||item.recent_order_num}} 单</p>
+              <p>{{item.delivery_fee||item.float_minimum_order_amount}} 元起送 / 距离{{item.distance}}</p>
+            </div>
+          </section>
+        </router-link>
+      </ul>
+    </section>
+    <div class="search_none" v-else>很抱歉！无搜索结果</div>
   </section>
 </template>
 
 <script>
-  import TopHeader from '../../components/TopHeader/TopHeader'
-  export default {
-    components: {TopHeader}
+import {mapState} from 'vuex'
+import TopHeader from '../../components/TopHeader/TopHeader'
+export default {
+  data () {
+    return {
+      keyword: '',
+      // baseImageUrl:'https://fuss10.elemecdn.com',
+      noSearchShops: false
+    }
+  },
+  computed: {
+    ...mapState(['searchShops'])
+  },
+  methods: {
+    search () {
+      // 获得关键字
+      const keywords = this.keyword.trim()
+      // 有数据才进行搜索
+      if (keywords) {
+        this.$store.dispatch('searchShops', keywords)
+      }
+    }
+  },
+  watch: {
+    searchShops (value) {
+      if (!value.length) { // 没有数据
+        this.noSearchShops = true
+      } else { // 有数据
+        this.noSearchShops = false
+      }
+    }
+  },
+  components: {
+    TopHeader
   }
+}
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus" scoped>
   @import "../../common/stylus/mixins.styl"
-  .search  //搜索
+  .search
     width 100%
-
+    height 100%
+    overflow hidden
     .search_form
       clearFix()
       margin-top 45px
@@ -45,4 +99,34 @@
           font-size 16px
           color #fff
           background-color #02a774
+
+    .list
+      .list_container
+        background-color: #fff;
+        .list_li
+          display: flex;
+          justify-content: center;
+          padding: 10px
+          border-bottom: 1px solid $bc;
+          .item_left
+            margin-right: 10px
+            .restaurant_img
+              width 50px
+              height 50px
+              display block
+          .item_right
+            font-size 12px
+            flex 1
+            .item_right_text
+              p
+                line-height 12px
+                margin-bottom 6px
+                &:last-child
+                  margin-bottom 0
+    .search_none
+      margin: 0 auto
+      color: #333
+      background-color: #fff
+      text-align: center
+      margin-top: 0.125rem
 </style>

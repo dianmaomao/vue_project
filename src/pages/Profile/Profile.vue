@@ -97,28 +97,28 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-  import TopHeader from '../../components/TopHeader/TopHeader'
-  import {MessageBox} from 'mint-ui'
-  import {Toast} from 'mint-ui'
-  export default {
-    components:{
-      TopHeader
-    },
-    computed:{
-      ...mapState(['userInfo'])
+import {mapState} from 'vuex'
+import TopHeader from '../../components/TopHeader/TopHeader'
+import {MessageBox} from 'mint-ui'
+import {Toast} from 'mint-ui'
+export default {
+  components: {
+    TopHeader
   },
-    methods:{
-      logout(){
-        MessageBox.confirm('确定退出吗?').then(
-          action => {
-            //请求退出
-            this.$store.dispatch('logout')
-            Toast('退出成功')
-        });
-      }
+  computed: {
+    ...mapState(['userInfo'])
+  },
+  methods: {
+    logout () {
+      MessageBox.confirm('确定退出吗?').then(
+        action => {
+          // 请求退出
+          this.$store.dispatch('logout')
+          Toast('退出成功')
+        })
     }
   }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

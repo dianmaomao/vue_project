@@ -6,37 +6,37 @@
 </template>
 
 <script>
-  const CLASS_ON='on'
-  const CLASS_HALF='half'
-  const CLASS_OFF='off'
+const CLASS_ON = 'on'
+const CLASS_HALF = 'half'
+const CLASS_OFF = 'off'
 
-  export default {
-    props:{
-      score:Number,
-      size:Number
-    },
-    computed:{
-      starClasses(){
-        const {score}=this
-        const starClasses=[]  //starClasses总个数为5
-        //向starClasses里添加n个CLASS_ON
-        const scoreInterger=Math.floor(score) //得到score的整数部分
-        for(let i=0;i<scoreInterger;i++){
-          starClasses.push(CLASS_ON)
-        }
-        //向starClasses里添加0或1个CLASS_HALF
-        if(score*10-scoreInterger*10>=5){
-          starClasses.push(CLASS_HALF)
-        }
-        //向starClasses里添加n个CLASS_OFF
-        while (starClasses.length<5){
-          starClasses.push(CLASS_OFF)
-        }
-
-        return starClasses
+export default {
+  props: {
+    score: Number,
+    size: Number
+  },
+  computed: {
+    starClasses () {
+      const {score} = this
+      const starClasses = [] // starClasses总个数为5
+      // 向starClasses里添加n个CLASS_ON
+      const scoreInterger = Math.floor(score) // 得到score的整数部分
+      for (let i = 0; i < scoreInterger; i++) {
+        starClasses.push(CLASS_ON)
       }
+      // 向starClasses里添加0或1个CLASS_HALF
+      if (score * 10 - scoreInterger * 10 >= 5) {
+        starClasses.push(CLASS_HALF)
+      }
+      // 向starClasses里添加n个CLASS_OFF
+      while (starClasses.length < 5) {
+        starClasses.push(CLASS_OFF)
+      }
+
+      return starClasses
     }
   }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

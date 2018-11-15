@@ -48,20 +48,20 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-  import Star from '../Star/Star'
-  export default {
-    data(){
-      return {
-        //baseImageUrl: 'https://cangdu.org:8001/img/'
-      }
-    },
-    computed:{
-      ...mapState(['shops'])
-    },
-    components:{ // 映射组件
-    Star
+import {mapState} from 'vuex'
+import Star from '../Star/Star'
+export default {
+  data () {
+    return {
+      // baseImageUrl: 'https://cangdu.org:8001/img/'
     }
+  },
+  computed: {
+    ...mapState(['shops'])
+  },
+  components: { // 映射组件
+    Star
+  }
 }
 </script>
 

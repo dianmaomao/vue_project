@@ -10,12 +10,12 @@
 </template>
 
 <script>
-  import TopHeader from '../../components/TopHeader/TopHeader'
-  export default {
-    components:{
-      TopHeader
-    }
+import TopHeader from '../../components/TopHeader/TopHeader'
+export default {
+  components: {
+    TopHeader
   }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

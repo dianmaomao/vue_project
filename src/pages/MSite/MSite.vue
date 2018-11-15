@@ -17,7 +17,6 @@
         </router-link>
       </TopHeader>
 
-
       <!--首页导航-->
       <nav class="msite_nav">
         <div class="swiper-container" v-if="categorys.length">
@@ -52,78 +51,73 @@
 
 <script>
 
-  import Swiper from 'swiper'
-  import 'swiper/dist/css/swiper.min.css'
-  import ShopList from '../../components/ShopList/ShopList'
-  import TopHeader from '../../components/TopHeader/TopHeader'
-  import {mapState} from 'vuex'
+import Swiper from 'swiper'
+import 'swiper/dist/css/swiper.min.css'
+import ShopList from '../../components/ShopList/ShopList'
+import TopHeader from '../../components/TopHeader/TopHeader'
+import {mapState} from 'vuex'
 
-
-
-  export default {
-    data(){
-      return {
-        baseImageUrl:'https://fuss10.elemecdn.com'
-      }
-    },
-    mounted() {
-
-      this.$store.dispatch('getCategorys')
-      this.$store.dispatch('getShops')
-
-
-    },
-    components:{
-      TopHeader,
-      ShopList
-    },
-    computed:{
-      ...mapState(['address','categorys','userInfo']),
-      //根据获取得到的categorys生成categorysArr二维数组，
-      categorysArr () {
-        const {categorys} = this
-        // 准备空的2维数组
-        const arr = []
-        // 准备一个小数组(最大长度为8)
-        let minArr = []
-        // 遍历categorys
-        categorys.forEach(c => {
-          // 如果当前小数组已经满了, 创建一个新的
-          if(minArr.length===8) {
-            minArr = []
-          }
-          // 如果minArr是空的, 将小数组保存到大数组中
-          if(minArr.length===0) {
-            arr.push(minArr)
-          }
-          // 将当前分类保存到小数组中
-          minArr.push(c)
-        })
-
-        return arr
-      }
-  },
-    watch:{
-      categorys(value){ //categorys中有数据了,在异步更新界面之前执行
-       //  //使用settTimeout可以实现，但是不够好
-        //  setTimeout(()=>{
-        //
-        // },100)
-        //希望界面更新立即创建swiper对象
-        this.$nextTick(()=>{ //nexttick的作用一旦完成界面更新立即调用（要在数据更新后调用此方法）
-          //创建一个swiper实例对象
-          new Swiper('.swiper-container',{
-            loop:true, //允许循环轮播
-            //如果需要分页器
-            pagination:{
-              el:'.swiper-pagination',
-            }
-          })
-        })
-      }
-
+export default {
+  data () {
+    return {
+      baseImageUrl: 'https://fuss10.elemecdn.com'
     }
+  },
+  mounted () {
+    this.$store.dispatch('getCategorys')
+    this.$store.dispatch('getShops')
+  },
+  components: {
+    TopHeader,
+    ShopList
+  },
+  computed: {
+    ...mapState(['address', 'categorys', 'userInfo']),
+    // 根据获取得到的categorys生成categorysArr二维数组，
+    categorysArr () {
+      const {categorys} = this
+      // 准备空的2维数组
+      const arr = []
+      // 准备一个小数组(最大长度为8)
+      let minArr = []
+      // 遍历categorys
+      categorys.forEach(c => {
+        // 如果当前小数组已经满了, 创建一个新的
+        if (minArr.length === 8) {
+          minArr = []
+        }
+        // 如果minArr是空的, 将小数组保存到大数组中
+        if (minArr.length === 0) {
+          arr.push(minArr)
+        }
+        // 将当前分类保存到小数组中
+        minArr.push(c)
+      })
+
+      return arr
+    }
+  },
+  watch: {
+    categorys (value) { // categorys中有数据了,在异步更新界面之前执行
+      //  //使用settTimeout可以实现，但是不够好
+      //  setTimeout(()=>{
+      //
+      // },100)
+      // 希望界面更新立即创建swiper对象
+      this.$nextTick(() => { // nexttick的作用一旦完成界面更新立即调用（要在数据更新后调用此方法）
+        // 创建一个swiper实例对象
+        new Swiper('.swiper-container', {
+          loop: true, // 允许循环轮播
+          // 如果需要分页器
+          pagination: {
+            el: '.swiper-pagination'
+          }
+        })
+      })
+    }
+
   }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
